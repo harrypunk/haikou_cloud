@@ -1,0 +1,5 @@
+make: Entering directory '/home/mddev/Workspace/haikou_cloud'
+GOOS=linux CGO_ENABLED=0 go build  -o build/aliyun_migrate func/aliyun_migrate/app.go
+zip -j build/aliyun_migrate.zip build/aliyun_migrate
+make: Leaving directory '/home/mddev/Workspace/haikou_cloud'
+ 
