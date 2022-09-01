@@ -10,7 +10,7 @@ import (
 type StructEvent struct {
 }
 
-func Migrate(ctx context.Context, event StructEvent) (*string, error) {
+func migrate(ctx context.Context, event StructEvent) (*string, error) {
 	err := service.Migrate()
 	if err != nil {
 		return nil, err
@@ -20,5 +20,5 @@ func Migrate(ctx context.Context, event StructEvent) (*string, error) {
 }
 
 func main() {
-	fc.Start(Migrate)
+	fc.Start(migrate)
 }
