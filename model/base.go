@@ -43,7 +43,7 @@ type School struct {
 
 type Grade struct {
 	gorm.Model
-	Num         int
+	Num         int    `gorm:"type:TINYINT UNSIGNED;"`
 	DisplayText string `gorm:"type:varchar(10);"`
 	Students    []Student
 }
