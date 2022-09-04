@@ -1,6 +1,5 @@
 .PHONY: clean
 
-LDFLAGS = --ldflags "-extldflags -static"
 GO_FLAGS = GOOS=linux CGO_ENABLED=0
 
 build/aliyun_migrate.zip: build/aliyun_migrate
