@@ -47,6 +47,7 @@ func (gen *NameGenerator) GetNames() Names {
 			var children2 = familyName + gen.RandomFirstNames(2)
 			ch <- [4]string{father, mother, children1, children2}
 		}
+		close(ch)
 	}()
 	return ch
 }
