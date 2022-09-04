@@ -4,11 +4,35 @@ import (
 	"testing"
 )
 
-func namesN(n int, t *testing.T) {
-	gen := NewWithLen(n)
+func familiesN(n int, t *testing.T) {
+	gen := NewWithSeed(100)
 	count := 0
-	for names := range gen.GetNames() {
-		t.Logf("names: %v", names)
+	for families := range gen.GetFamilyNames(n) {
+		t.Logf("families: %v", families)
+		count += 1
+	}
+	if count != n {
+		t.Fail()
+	}
+}
+
+func TestFamilies5(t *testing.T) {
+	familiesN(5, t)
+}
+
+func TestFamilies20(t *testing.T) {
+	familiesN(20, t)
+}
+
+func TestFamilies40(t *testing.T) {
+	familiesN(40, t)
+}
+
+func nameListN(n int, t *testing.T) {
+	gen := NewWithSeed(101)
+	count := 0
+	for name := range gen.RandomNameList(n) {
+		t.Log(name)
 		count += 1
 	}
 	if count != n {
@@ -17,13 +41,9 @@ func namesN(n int, t *testing.T) {
 }
 
 func TestNames5(t *testing.T) {
-	namesN(5, t)
+	nameListN(5, t)
 }
 
-func TestNames20(t *testing.T) {
-	namesN(20, t)
-}
-
-func TestNames40(t *testing.T) {
-	namesN(40, t)
+func TestNames10(t *testing.T) {
+	nameListN(10, t)
 }
