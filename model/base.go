@@ -44,7 +44,7 @@ type School struct {
 type Grade struct {
 	gorm.Model
 	Num         int
-	DisplayText string
+	DisplayText string `gorm:"type:varchar(10);"`
 	Students    []Student
 }
 
