@@ -32,6 +32,25 @@ func AddCourses(db *gorm.DB) error {
 	return result.Error
 }
 
+func AddMockSchool(db *gorm.DB) error {
+	var schools = []model.School{
+		school(33, "海南中学"),
+		school(34, "海口第一中学"),
+		school(35, "海口第二中学"),
+		school(36, "秀英第三中学"),
+		school(37, "慧蔚外国语"),
+	}
+	var result = db.Clauses(clause.OnConflict{DoNothing: true}).Create(&schools)
+	return result.Error
+}
+
+func school(id uint, name string) model.School {
+	return model.School{
+		Model: gorm.Model{ID: id},
+		Name:  name,
+	}
+}
+
 func grade(id uint, num uint8, text string) model.Grade {
 	return model.Grade{
 		Model:       gorm.Model{ID: id},

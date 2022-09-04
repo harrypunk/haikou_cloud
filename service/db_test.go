@@ -49,3 +49,15 @@ func TestCourses(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestSchools(t *testing.T) {
+	db, err := localDB()
+	if err != nil {
+		t.Error(err)
+	}
+	err = AddMockSchool(db)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+}
