@@ -37,3 +37,15 @@ func TestGrades(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestCourses(t *testing.T) {
+	db, err := localDB()
+	if err != nil {
+		t.Error(err)
+	}
+	err = AddCourses(db)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+}

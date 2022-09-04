@@ -6,8 +6,8 @@ import (
 
 type Student struct {
 	gorm.Model
-	Gender   int    `gorm:"type:TINYINT UNSIGNED;"`
-	Age      int    `gorm:"type:TINYINT UNSIGNED;"`
+	Gender   uint8  `gorm:"type:TINYINT UNSIGNED;"`
+	Age      uint8  `gorm:"type:TINYINT UNSIGNED;"`
 	Name     string `gorm:"type:varchar(10);"`
 	Phone    string `gorm:"type:varchar(20);"`
 	FamilyID uint
@@ -19,7 +19,7 @@ type Student struct {
 
 type Parent struct {
 	gorm.Model
-	Gender      int    `gorm:"type:TINYINT UNSIGNED;"`
+	Gender      uint8  `gorm:"type:TINYINT UNSIGNED;"`
 	Name        string `gorm:"type:varchar(10);"`
 	Phone       string `gorm:"type:varchar(20);"`
 	Description string `gorm:"type:varchar(30);"`
@@ -43,7 +43,7 @@ type School struct {
 
 type Grade struct {
 	gorm.Model
-	Num         int    `gorm:"type:TINYINT UNSIGNED;"`
+	Num         uint8  `gorm:"type:TINYINT UNSIGNED;"`
 	DisplayText string `gorm:"type:varchar(10);"`
 	Students    []Student
 }
