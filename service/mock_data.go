@@ -31,10 +31,10 @@ func school(id uint, name string) model.School {
 	}
 }
 
-func parent(name string, gender uint8, phone string) model.Parent {
-	return model.Parent{
-		Name:   name,
-		Gender: gender,
-		Phone:  phone,
-	}
-}
+// func parent(name string, gender uint8, phone string) model.Parent {
+// 	return model.Parent{
+// 		Name:   name,
+// 		Gender: gender,
+// 		Phone:  phone,
+// 	}
+// }

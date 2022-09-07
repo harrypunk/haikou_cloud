@@ -6,33 +6,39 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func AddGrades(db *gorm.DB) error {
+func AddGrades(db *gorm.DB, data *CommonData) error {
+	var result = db.Clauses(clause.OnConflict{DoNothing: true}).Create(&data.Grades)
+	return result.Error
+}
+
+func AddCourses(db *gorm.DB, data *CommonData) error {
+	var result = db.Clauses(clause.OnConflict{UpdateAll: true}).Create(&data.Courses)
+	return result.Error
+}
+
+type CommonData struct {
+	Grades  []model.Grade
+	Courses []model.Course
+}
+
+func NewCommonData(gradeKeyMin int) CommonData {
 	var texts = defaultGrades()
 	var len1 = len(texts)
 	var grades = make([]model.Grade, len1)
 	for i := 0; i < len1; i++ {
-		grades[i] = grade(uint(100+i), uint8(6+i), texts[i])
+		grades[i] = grade(uint8(gradeKeyMin+i), texts[i])
 	}
-	var result = db.Clauses(clause.OnConflict{DoNothing: true}).Create(&grades)
-	return result.Error
-}
 
-func AddCourses(db *gorm.DB) error {
-	var courses = []model.Course{
-		course(101, "物理"),
-		course(102, "化学"),
-		course(103, "数学"),
-		course(104, "英语"),
+	var crs = defaultCourses()
+	var len2 = len(crs)
+	var courses = make([]model.Course, len2)
+	for i := 0; i < len2; i++ {
+		courses[i] = course(crs[i])
 	}
-	var result = db.Clauses(clause.OnConflict{DoNothing: true}).Create(&courses)
-	return result.Error
-}
 
-func grade(id uint, num uint8, text string) model.Grade {
-	return model.Grade{
-		Model:       gorm.Model{ID: id},
-		Num:         num,
-		DisplayText: text,
+	return CommonData{
+		Grades:  grades,
+		Courses: courses,
 	}
 }
 
@@ -40,10 +46,19 @@ func defaultGrades() []string {
 	return []string{"初一", "初二", "初三", "高一", "高二", "高三"}
 }
 
-func course(id uint, name string) model.Course {
-	return model.Course{
-		Model: gorm.Model{ID: id},
-		Name:  name,
-	}
+func defaultCourses() []string {
+	return []string{"物理", "化学", "数学", "英语"}
+}
 
+func course(name string) model.Course {
+	return model.Course{
+		Name: name,
+	}
+}
+
+func grade(num uint8, text string) model.Grade {
+	return model.Grade{
+		Num:         num,
+		DisplayText: text,
+	}
 }

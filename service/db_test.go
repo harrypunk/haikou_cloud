@@ -18,6 +18,10 @@ func localDB() (db *gorm.DB, err error) {
 	return Connection("onetwo", "", "localhost", "haikou_test")
 }
 
+func exampleData() CommonData {
+	return NewCommonData(2)
+}
+
 func TestMigrate(t *testing.T) {
 	setLocalDB()
 	err := Migrate()
@@ -31,7 +35,8 @@ func TestGrades(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = AddGrades(db)
+	data := exampleData()
+	err = AddGrades(db, &data)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
@@ -43,7 +48,8 @@ func TestCourses(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = AddCourses(db)
+	data := exampleData()
+	err = AddCourses(db, &data)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
