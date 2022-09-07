@@ -7,7 +7,7 @@ import (
 )
 
 func AddMockData(db *gorm.DB) error {
-	dbSession := db.Session(&gorm.Session{CreateBatchSize: 10})
+	// dbSession := db.Session(&gorm.Session{CreateBatchSize: 10})
 
 	return nil
 }
