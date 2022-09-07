@@ -7,6 +7,8 @@ import (
 )
 
 func AddMockData(db *gorm.DB) error {
+	dbSession := db.Session(&gorm.Session{CreateBatchSize: 10})
+
 	return nil
 }
 
@@ -26,5 +28,13 @@ func school(id uint, name string) model.School {
 	return model.School{
 		Model: gorm.Model{ID: id},
 		Name:  name,
+	}
+}
+
+func parent(name string, gender uint8, phone string) model.Parent {
+	return model.Parent{
+		Name:   name,
+		Gender: gender,
+		Phone:  phone,
 	}
 }

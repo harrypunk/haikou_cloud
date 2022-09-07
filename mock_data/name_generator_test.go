@@ -47,3 +47,15 @@ func TestNames5(t *testing.T) {
 func TestNames10(t *testing.T) {
 	nameListN(10, t)
 }
+
+func TestPhone10(t *testing.T) {
+	gen := NewWithSeed(100)
+	count := 0
+	for phone := range gen.RandomPhone(10) {
+		t.Log(phone)
+		count += 1
+	}
+	if count != 10 {
+		t.Fail()
+	}
+}
