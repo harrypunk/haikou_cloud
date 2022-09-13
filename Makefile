@@ -1,11 +1,15 @@
-.PHONY: clean
+funcs = aliyun_migrate init_common
+
+.PHONY: clean $(funcs)
 
 GO_FLAGS = GOOS=linux CGO_ENABLED=0
 
-build/aliyun_migrate.zip: build/aliyun_migrate
+$(funcs): %: build/%.zip build/%
+
+build/%.zip: build/%
 	zip -j $@ $<
 
-build/aliyun_migrate: func/aliyun_migrate/app.go
+build/%: func/%/app.go
 	${GO_FLAGS} go build  -o $@ $<
 
 clean:
