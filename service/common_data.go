@@ -21,12 +21,12 @@ type CommonData struct {
 	Courses []model.Course
 }
 
-func NewCommonData(gradeKeyMin int) CommonData {
-	var texts = defaultGrades()
-	var len1 = len(texts)
+func NewCommonData() CommonData {
+	var nums = defaultGrades()
+	var len1 = len(nums)
 	var grades = make([]model.Grade, len1)
 	for i := 0; i < len1; i++ {
-		grades[i] = grade(uint8(gradeKeyMin+i), texts[i])
+		grades[i] = grade(nums[i])
 	}
 
 	var crs = defaultCourses()
@@ -42,12 +42,12 @@ func NewCommonData(gradeKeyMin int) CommonData {
 	}
 }
 
-func defaultGrades() []string {
-	return []string{"初一", "初二", "初三", "高一", "高二", "高三"}
+func defaultGrades() []uint8 {
+	return []uint8{7, 8, 9, 10, 11, 12}
 }
 
 func defaultCourses() []string {
-	return []string{"物理", "化学", "数学", "英语"}
+	return []string{"physics", "chemistry", "math", "english"}
 }
 
 func course(name string) model.Course {
@@ -56,9 +56,8 @@ func course(name string) model.Course {
 	}
 }
 
-func grade(num uint8, text string) model.Grade {
+func grade(num uint8) model.Grade {
 	return model.Grade{
-		Num:         num,
-		DisplayText: text,
+		Num: num,
 	}
 }

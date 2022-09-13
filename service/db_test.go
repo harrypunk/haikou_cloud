@@ -19,7 +19,7 @@ func localDB() (db *gorm.DB, err error) {
 }
 
 func exampleData() CommonData {
-	return NewCommonData(2)
+	return NewCommonData()
 }
 
 func TestMigrate(t *testing.T) {
