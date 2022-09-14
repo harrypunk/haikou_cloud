@@ -1,4 +1,4 @@
-package mockdata
+package mock_data
 
 import (
 	"testing"
