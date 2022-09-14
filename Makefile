@@ -1,4 +1,5 @@
 funcs = aliyun_migrate init_common
+sls_bucket = sls075
 
 .PHONY: clean $(funcs)
 
@@ -14,3 +15,6 @@ build/%: func/%/app.go
 
 clean:
 	rm build/*
+
+all: $(funcs)
+	aliyun oss cp -f -r --include "*.zip" ./build oss://${sls_bucket}
