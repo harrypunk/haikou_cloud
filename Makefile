@@ -1,4 +1,4 @@
-funcs = aliyun_migrate init_common
+funcs = aliyun_migrate init_common init_schools
 sls_bucket = sls075
 
 .PHONY: clean $(funcs)

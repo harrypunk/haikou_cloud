@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/harrypunk/haikou_cloud/mock_data"
 	"github.com/harrypunk/haikou_cloud/model"
 	"gorm.io/gorm"
 )
@@ -18,19 +17,21 @@ func AddMockSchool(db *gorm.DB) error {
 }
 
 var mockSchools = []model.School{
-	school("海南中学"),
-	school("海口第一中学"),
-	school("海口第二中学"),
-	school("秀英第三中学"),
-	school("慧蔚外国语"),
+	school(33, "海南中学"),
+	school(34, "海口第一中学"),
+	school(35, "海口第二中学"),
+	school(36, "秀英第三中学"),
+	school(37, "慧蔚外国语"),
 }
 
-func school(name string) model.School {
+func school(id uint, name string) model.School {
 	return model.School{
-		Name: name,
+		Model: gorm.Model{ID: id},
+		Name:  name,
 	}
 }
 
+/*
 func parent(name string, gender uint8, phone string) model.Parent {
 	return model.Parent{
 		Name:   name,
@@ -52,7 +53,6 @@ func mockFamilies(seed int64, count int, bufferSize uint) <-chan []model.Family 
 		var mother = famNames[1]
 		var child1 = famNames[2]
 		var child2 = famNames[3]
-		familyCh <- 
 	}
 
 	return bufferFamilies(familyCh, bufferSize)
@@ -74,3 +74,4 @@ func bufferFamilies(ch chan model.Family, bufferSize uint) <-chan []model.Family
 	close(outCh)
 	return outCh
 }
+*/
