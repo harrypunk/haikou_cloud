@@ -9,7 +9,7 @@ import (
 )
 
 func AddMockData(db *gorm.DB, familyNum int) error {
-	var fams = make([]model.Family, familyNum)
+	fams := make([]model.Family, familyNum)
 	for fam := range mockFamilies(100, familyNum) {
 		fams = append(fams, fam)
 	}
@@ -59,26 +59,28 @@ func mockFamilies(seed int64, count int) <-chan model.Family {
 	var names = generator.GetFamilyNames(count)
 	var phones = generator.RandomPhone(4 * count)
 	var familyCh = make(chan model.Family)
-	for famNames := range names {
-		var father = famNames[0]
-		var mother = famNames[1]
-		var child1 = famNames[2]
-		var child2 = famNames[3]
+	go func() {
+		for famNames := range names {
+			var father = famNames[0]
+			var mother = famNames[1]
+			var child1 = famNames[2]
+			var child2 = famNames[3]
 
-		var fam = model.Family{
-			Name: fmt.Sprintf("家庭 %v,%v", father, mother),
-			Students: []model.Student{
-				student(child1, 1, <-phones),
-				student(child2, 2, <-phones),
-			},
-			Parents: []model.Parent{
-				parent(father, 1, <-phones),
-				parent(mother, 2, <-phones),
-			},
+			var fam = model.Family{
+				Name: fmt.Sprintf("家庭 %v,%v", father, mother),
+				Students: []model.Student{
+					student(child1, 1, <-phones),
+					student(child2, 2, <-phones),
+				},
+				Parents: []model.Parent{
+					parent(father, 1, <-phones),
+					parent(mother, 2, <-phones),
+				},
+			}
+			familyCh <- fam
 		}
-		familyCh <- fam
-	}
-	close(familyCh)
+		close(familyCh)
+	}()
 
 	return familyCh
 }
