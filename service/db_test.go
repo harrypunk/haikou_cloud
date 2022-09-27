@@ -67,3 +67,15 @@ func TestSchools(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestParentsChildren(t *testing.T) {
+	db, err := localDB()
+	if err != nil {
+		t.Error(err)
+	}
+	err = AddMockData(db, 50)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+}
