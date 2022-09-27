@@ -9,13 +9,31 @@ import (
 )
 
 func AddMockData(db *gorm.DB, familyNum int) error {
+	var grades []model.Grade
+	result := db.Find(&grades)
+	err := result.Error
+	if err != nil {
+		return err
+	}
+
+	var schools []model.School
+	result = db.Find(&schools)
+	err = result.Error
+	if err != nil {
+		return err
+	}
+
 	fams := make([]model.Family, familyNum)
-	for fam := range mockFamilies(100, familyNum) {
+	for fam := range mockFamilies(100, familyNum,
+		randGrade(grades),
+		randSchool(schools),
+	) {
 		fams = append(fams, fam)
 	}
-	var result = db.CreateInBatches(fams, 10)
+	result = db.CreateInBatches(fams, 10)
+	err = result.Error
 
-	return result.Error
+	return err
 }
 
 func AddMockSchool(db *gorm.DB) error {
@@ -38,23 +56,29 @@ func school(id uint, name string) model.School {
 	}
 }
 
-func parent(name string, gender uint8, phone string) model.Parent {
-	return model.Parent{
-		Name:   name,
-		Gender: gender,
-		Phone:  phone,
-	}
+func randGrade(grades []model.Grade) <-chan model.Grade {
+	var ch = make(chan model.Grade)
+	go func() {
+		for i := 0; ; i = (i + 1) % len(grades) {
+			ch <- grades[i]
+		}
+	}()
+	return ch
 }
 
-func student(name string, gender uint8, phone string) model.Student {
-	return model.Student{
-		Name:   name,
-		Gender: gender,
-		Phone:  phone,
-	}
+func randSchool(schools []model.School) <-chan model.School {
+	var ch = make(chan model.School)
+	go func() {
+		for i := 0; ; i = (i + 1) % len(schools) {
+			ch <- schools[i]
+		}
+	}()
+	return ch
 }
 
-func mockFamilies(seed int64, count int) <-chan model.Family {
+func mockFamilies(seed int64, count int,
+	grade <-chan model.Grade,
+	school <-chan model.School) <-chan model.Family {
 	var generator = mock_data.NewWithSeed(seed)
 	var names = generator.GetFamilyNames(count)
 	var phones = generator.RandomPhone(4 * count)
@@ -69,12 +93,32 @@ func mockFamilies(seed int64, count int) <-chan model.Family {
 			var fam = model.Family{
 				Name: fmt.Sprintf("家庭 %v,%v", father, mother),
 				Students: []model.Student{
-					student(child1, 1, <-phones),
-					student(child2, 2, <-phones),
+					{
+						Name:     child1,
+						Gender:   1,
+						Phone:    <-phones,
+						GradeID:  (<-grade).ID,
+						SchoolID: (<-school).ID,
+					},
+					{
+						Name:     child2,
+						Gender:   2,
+						Phone:    <-phones,
+						GradeID:  (<-grade).ID,
+						SchoolID: (<-school).ID,
+					},
 				},
 				Parents: []model.Parent{
-					parent(father, 1, <-phones),
-					parent(mother, 2, <-phones),
+					{
+						Name:   father,
+						Gender: 1,
+						Phone:  <-phones,
+					},
+					{
+						Name:   father,
+						Gender: 2,
+						Phone:  <-phones,
+					},
 				},
 			}
 			familyCh <- fam
@@ -84,22 +128,3 @@ func mockFamilies(seed int64, count int) <-chan model.Family {
 
 	return familyCh
 }
-
-/*
-func bufferFamilies(ch chan model.Family, bufferSize uint) <-chan []model.Family {
-	var outCh = make(chan []model.Family)
-	buffer := make([]model.Family, bufferSize)
-	for fam := range ch {
-		buffer = append(buffer, fam)
-		if len(buffer) >= int(bufferSize) {
-			outCh <- buffer
-			buffer = make([]model.Family, bufferSize)
-		}
-	}
-	if len(buffer) > 0 {
-		outCh <- buffer
-	}
-	close(outCh)
-	return outCh
-}
-*/
