@@ -115,7 +115,7 @@ func mockFamilies(seed int64, count int,
 						Phone:  <-phones,
 					},
 					{
-						Name:   father,
+						Name:   mother,
 						Gender: 2,
 						Phone:  <-phones,
 					},
