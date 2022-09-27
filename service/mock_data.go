@@ -23,7 +23,7 @@ func AddMockData(db *gorm.DB, familyNum int) error {
 		return err
 	}
 
-	fams := make([]model.Family, familyNum)
+	fams := make([]model.Family, 0)
 	for fam := range mockFamilies(100, familyNum,
 		randGrade(grades),
 		randSchool(schools),
