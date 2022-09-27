@@ -1,4 +1,4 @@
-funcs = aliyun_migrate init_common init_schools
+funcs = aliyun_migrate init_common init_schools init_mock_data
 sls_bucket = sls075
 
 .PHONY: clean $(funcs)
@@ -17,4 +17,4 @@ clean:
 	rm build/*
 
 all: $(funcs)
-	aliyun oss cp -f -r --include "*.zip" ./build oss://${sls_bucket}
+	aliyun oss sync -f -u --include "*.zip" ./build oss://${sls_bucket}
