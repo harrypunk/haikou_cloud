@@ -13,8 +13,7 @@ type Student struct {
 	FamilyID uint
 	GradeID  uint
 	SchoolID uint
-	Courses  []*Course  `gorm:"many2many:student_course;"`
-	Teachers []*Teacher `gorm:"many2many:student_teacher;"`
+	Courses  []*Course `gorm:"many2many:student_course;"`
 }
 
 type Parent struct {
@@ -57,8 +56,7 @@ type Course struct {
 
 type Teacher struct {
 	gorm.Model
-	Name        string     `gorm:"type:varchar(20);"`
-	Description string     `gorm:"type:TEXT;"`
-	Students    []*Student `gorm:"many2many:student_teacher;"`
+	Name        string `gorm:"type:varchar(20);"`
+	Description string `gorm:"type:TEXT;"`
 	CourseId    uint
 }
