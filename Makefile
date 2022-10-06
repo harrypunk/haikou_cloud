@@ -1,7 +1,7 @@
 funcs = aliyun_migrate init_common init_schools init_mock_data
 sls_bucket = sls075
 
-.PHONY: clean $(funcs)
+.PHONY: clean $(funcs) sync all
 
 GO_FLAGS = GOOS=linux CGO_ENABLED=0
 
@@ -17,4 +17,6 @@ clean:
 	rm build/*
 
 all: $(funcs)
+
+sync:
 	aliyun oss sync -f -u --include "*.zip" ./build oss://${sls_bucket}
