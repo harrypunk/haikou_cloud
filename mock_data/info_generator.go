@@ -66,14 +66,13 @@ func (gen *InfoGenerator) RandomNameList() <-chan string {
 	return ch
 }
 
-func (gen *InfoGenerator) RandomPhone(count int) <-chan string {
+func (gen *InfoGenerator) RandomPhone() <-chan string {
 	var ch = make(chan string)
 	go func() {
-		for i := 0; i < count; i++ {
+		for {
 			num1, num2 := gen.rand.Intn(9999), gen.rand.Intn(9999)
 			ch <- fmt.Sprintf("136%04d%04d", num1, num2)
 		}
-		close(ch)
 	}()
 	return ch
 }

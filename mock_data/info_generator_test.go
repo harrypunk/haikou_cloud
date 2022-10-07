@@ -43,12 +43,8 @@ func TestNames10(t *testing.T) {
 
 func TestPhone10(t *testing.T) {
 	gen := NewWithSeed(100)
-	count := 0
-	for phone := range gen.RandomPhone(10) {
-		t.Log(phone)
-		count += 1
-	}
-	if count != 10 {
-		t.Fail()
+	ch := gen.RandomPhone()
+	for i := 0; i < 10; i++ {
+		t.Log(<-ch)
 	}
 }
