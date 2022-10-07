@@ -80,7 +80,7 @@ func mockFamilies(seed int64, count int,
 	grade <-chan model.Grade,
 	school <-chan model.School) <-chan model.Family {
 	var generator = mock_data.NewWithSeed(seed)
-	var names = generator.GetFamilyNames(count)
+	var names = generator.GetFamilyNames()
 	var phones = generator.RandomPhone(4 * count)
 	var familyCh = make(chan model.Family)
 	go func() {

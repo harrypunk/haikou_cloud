@@ -36,22 +36,20 @@ func (gen *InfoGenerator) RandomFirstNames(length int) string {
 
 type Names = <-chan [4]string
 
-// Generate 4 names in a family. [father, mother, children1, children2]
-func (gen *InfoGenerator) GetFamilyNames(familyNum int) Names {
+// Generate 4 names in a family. [father, mother, child1, child2]
+func (gen *InfoGenerator) GetFamilyNames() Names {
 	var ch = make(chan [4]string)
 	var famLen = len(gen.familyNames)
 	go func() {
-		for i := 0; i < familyNum; i++ {
-			var index = i % famLen
-			var familyName = gen.familyNames[index]
+		for i := 0; ; i = (i + 1) % famLen {
+			var familyName = gen.familyNames[i]
 			var father = familyName + gen.RandomFirstNames(2)
 			famIndex := gen.rand.Intn(famLen)
 			var mother = gen.familyNames[famIndex] + gen.RandomFirstNames(1)
-			var children1 = familyName + gen.RandomFirstNames(1)
-			var children2 = familyName + gen.RandomFirstNames(2)
-			ch <- [4]string{father, mother, children1, children2}
+			var child1 = familyName + gen.RandomFirstNames(1)
+			var child2 = familyName + gen.RandomFirstNames(2)
+			ch <- [4]string{father, mother, child1, child2}
 		}
-		close(ch)
 	}()
 	return ch
 }

@@ -6,13 +6,10 @@ import (
 
 func familiesN(n int, t *testing.T) {
 	gen := NewWithSeed(100)
-	count := 0
-	for families := range gen.GetFamilyNames(n) {
-		t.Logf("families: %v", families)
-		count += 1
-	}
-	if count != n {
-		t.Fail()
+	ch := gen.GetFamilyNames()
+	for i := 0; i < n; i++ {
+		family := <-ch
+		t.Logf("families: %v", family)
 	}
 }
 
