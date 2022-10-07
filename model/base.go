@@ -53,6 +53,7 @@ type Course struct {
 	Name     string     `gorm:"type:varchar(10);"`
 	Students []*Student `gorm:"many2many:student_course;"`
 	Teachers []Teacher
+	Sessions []Session
 }
 
 type Teacher struct {
@@ -66,6 +67,7 @@ type Teacher struct {
 
 type Session struct {
 	gorm.Model
+	CourseId      uint
 	Description   string     `gorm:"type:TEXT;"`
 	Students      []*Student `gorm:"many2many:student_session;"`
 	MainTeacherID uint
