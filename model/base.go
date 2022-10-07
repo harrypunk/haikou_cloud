@@ -60,7 +60,7 @@ type Teacher struct {
 	Name          string `gorm:"type:varchar(20);"`
 	Description   string `gorm:"type:TEXT;"`
 	CourseId      uint
-	MainSessions  []Session
+	MainSessions  []Session  `gorm:"foreignKey:MainTeacherID"`
 	OtherSessions []*Session `gorm:"many2many:teacher_session;"`
 }
 

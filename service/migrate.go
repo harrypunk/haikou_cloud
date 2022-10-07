@@ -16,6 +16,7 @@ func Migrate() error {
 			&m.School{},
 			&m.Student{},
 			&m.Parent{},
+			&m.Session{},
 		)
 	if err != nil {
 		return err
