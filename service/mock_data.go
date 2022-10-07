@@ -23,13 +23,7 @@ func AddMockData(db *gorm.DB, familyNum int) error {
 		return err
 	}
 
-	fams := make([]model.Family, 0)
-	for fam := range mockFamilies(100, familyNum,
-		randGrade(grades),
-		randSchool(schools),
-	) {
-		fams = append(fams, fam)
-	}
+	var fams = mockFamilies(100, familyNum, randGrade(grades), randSchool(schools))
 	result = db.CreateInBatches(fams, 10)
 	err = result.Error
 
@@ -78,53 +72,51 @@ func randSchool(schools []model.School) <-chan model.School {
 
 func mockFamilies(seed int64, count int,
 	grade <-chan model.Grade,
-	school <-chan model.School) <-chan model.Family {
+	school <-chan model.School) []model.Family {
 	var generator = mock_data.NewWithSeed(seed)
 	var names = generator.GetFamilyNames()
-	var phones = generator.RandomPhone(4 * count)
-	var familyCh = make(chan model.Family)
-	go func() {
-		for famNames := range names {
-			var father = famNames[0]
-			var mother = famNames[1]
-			var child1 = famNames[2]
-			var child2 = famNames[3]
+	var phones = generator.RandomPhone()
+	families := make([]model.Family, 0)
+	for i := 0; i < count; i++ {
+		var famNames = <-names
+		var father = famNames[0]
+		var mother = famNames[1]
+		var child1 = famNames[2]
+		var child2 = famNames[3]
 
-			var fam = model.Family{
-				Name: fmt.Sprintf("家庭 %v,%v", father, mother),
-				Students: []model.Student{
-					{
-						Name:     child1,
-						Gender:   1,
-						Phone:    <-phones,
-						GradeID:  (<-grade).ID,
-						SchoolID: (<-school).ID,
-					},
-					{
-						Name:     child2,
-						Gender:   2,
-						Phone:    <-phones,
-						GradeID:  (<-grade).ID,
-						SchoolID: (<-school).ID,
-					},
+		var fam = model.Family{
+			Name: fmt.Sprintf("家庭 %v,%v", father, mother),
+			Students: []model.Student{
+				{
+					Name:     child1,
+					Gender:   1,
+					Phone:    <-phones,
+					GradeID:  (<-grade).ID,
+					SchoolID: (<-school).ID,
 				},
-				Parents: []model.Parent{
-					{
-						Name:   father,
-						Gender: 1,
-						Phone:  <-phones,
-					},
-					{
-						Name:   mother,
-						Gender: 2,
-						Phone:  <-phones,
-					},
+				{
+					Name:     child2,
+					Gender:   2,
+					Phone:    <-phones,
+					GradeID:  (<-grade).ID,
+					SchoolID: (<-school).ID,
 				},
-			}
-			familyCh <- fam
+			},
+			Parents: []model.Parent{
+				{
+					Name:   father,
+					Gender: 1,
+					Phone:  <-phones,
+				},
+				{
+					Name:   mother,
+					Gender: 2,
+					Phone:  <-phones,
+				},
+			},
 		}
-		close(familyCh)
-	}()
+		families = append(families, fam)
+	}
 
-	return familyCh
+	return families
 }
