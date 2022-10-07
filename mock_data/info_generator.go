@@ -54,16 +54,14 @@ func (gen *InfoGenerator) GetFamilyNames() Names {
 	return ch
 }
 
-func (gen *InfoGenerator) RandomNameList(count int) <-chan string {
+func (gen *InfoGenerator) RandomNameList() <-chan string {
 	var ch = make(chan string)
 	var famLen = len(gen.familyNames)
 	go func() {
-		for i := 0; i < count; i++ {
-			var index = i % famLen
-			var name = gen.familyNames[index] + gen.RandomFirstNames(2)
+		for i := 0; ; i = (i + 1) % famLen {
+			var name = gen.familyNames[i] + gen.RandomFirstNames(2)
 			ch <- name
 		}
-		close(ch)
 	}()
 	return ch
 }

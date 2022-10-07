@@ -27,13 +27,9 @@ func TestFamilies40(t *testing.T) {
 
 func nameListN(n int, t *testing.T) {
 	gen := NewWithSeed(101)
-	count := 0
-	for name := range gen.RandomNameList(n) {
-		t.Log(name)
-		count += 1
-	}
-	if count != n {
-		t.Fail()
+	ch := gen.RandomNameList()
+	for i := 0; i < n; i++ {
+		t.Log(<-ch)
 	}
 }
 
