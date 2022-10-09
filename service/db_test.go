@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func setLocalDB() {
@@ -18,8 +19,11 @@ func localDB() (db *gorm.DB, err error) {
 	return Connection("onetwo", "", "localhost", "haikou_test")
 }
 
-func exampleData() CommonData {
-	return NewCommonData()
+var localDBConfig = DBConfig{
+	Username: "onetwo",
+	Password: "",
+	Url:      "localhost",
+	DBName:   "haikou_test",
 }
 
 func TestMigrate(t *testing.T) {
@@ -35,7 +39,7 @@ func TestGrades(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	data := exampleData()
+	data := NewCommonData()
 	err = AddGrades(db, &data)
 	if err != nil {
 		t.Error(err)
@@ -48,7 +52,7 @@ func TestCourses(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	data := exampleData()
+	data := NewCommonData()
 	err = AddCourses(db, &data)
 	if err != nil {
 		t.Error(err)
@@ -81,7 +85,9 @@ func TestParentsChildren(t *testing.T) {
 }
 
 func TestTeachers(t *testing.T) {
-	db, err := localDB()
+	db, err := localDBConfig.ToClient(&gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		t.Error(err)
 	}

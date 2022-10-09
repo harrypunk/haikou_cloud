@@ -18,8 +18,28 @@ func EnvConnection() (db *gorm.DB, err error) {
 }
 
 func Connection(db_user string, db_password string, db_url string, db_name string) (db *gorm.DB, err error) {
-	dsn := fmt.Sprintf(
+	data := DBConfig{
+		Username: db_user,
+		Password: db_password,
+		Url:      db_url,
+		DBName:   db_name,
+	}
+	return data.ToClient(&gorm.Config{})
+}
+
+type DBConfig struct {
+	Username string
+	Password string
+	Url      string
+	DBName   string
+}
+
+func (config *DBConfig) ToDsn() string {
+	return fmt.Sprintf(
 		"%v:%v@tcp(%v:3306)/%v?charset=utf8mb4&parseTime=True&loc=Local",
-		db_user, db_password, db_url, db_name)
-	return gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		config.Username, config.Password, config.Url, config.DBName)
+}
+
+func (config *DBConfig) ToClient(gormCfg *gorm.Config) (*gorm.DB, error) {
+	return gorm.Open(mysql.Open(config.ToDsn()), gormCfg)
 }
