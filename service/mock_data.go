@@ -8,6 +8,24 @@ import (
 	"gorm.io/gorm"
 )
 
+func AddMockTeachers(db *gorm.DB, count int) *gorm.DB {
+	var courses []model.Course
+	result := db.Find(&courses)
+	err := result.Error
+	if err != nil {
+		return result
+	}
+	var teacherNames = mockTeacherNames(103)
+	var courseCh = loopArray(courses)
+	teachers := make([]model.Teacher, 0)
+	for i := 0; i < count; i++ {
+		teacher := <-teacherNames
+		teacher.CourseId = (<-courseCh).ID
+		teachers = append(teachers, teacher)
+	}
+	return db.Create(teachers)
+}
+
 func AddMockData(db *gorm.DB, familyNum int) error {
 	var grades []model.Grade
 	result := db.Find(&grades)
@@ -23,7 +41,7 @@ func AddMockData(db *gorm.DB, familyNum int) error {
 		return err
 	}
 
-	var fams = mockFamilies(100, familyNum, randGrade(grades), randSchool(schools))
+	var fams = mockFamilies(100, familyNum, loopArray(grades), loopArray(schools))
 	result = db.CreateInBatches(fams, 10)
 	err = result.Error
 
@@ -50,21 +68,11 @@ func school(id uint, name string) model.School {
 	}
 }
 
-func randGrade(grades []model.Grade) <-chan model.Grade {
-	var ch = make(chan model.Grade)
+func loopArray[T interface{}](arr []T) <-chan T {
+	var ch = make(chan T)
 	go func() {
-		for i := 0; ; i = (i + 1) % len(grades) {
-			ch <- grades[i]
-		}
-	}()
-	return ch
-}
-
-func randSchool(schools []model.School) <-chan model.School {
-	var ch = make(chan model.School)
-	go func() {
-		for i := 0; ; i = (i + 1) % len(schools) {
-			ch <- schools[i]
+		for i := 0; ; i = (i + 1) % len(arr) {
+			ch <- arr[i]
 		}
 	}()
 	return ch
@@ -119,4 +127,16 @@ func mockFamilies(seed int64, count int,
 	}
 
 	return families
+}
+
+func mockTeacherNames(seed int64) <-chan model.Teacher {
+	var ch = make(chan model.Teacher)
+	var generator = mock_data.NewWithSeed(seed)
+	var names = generator.RandomNameList()
+	go func() {
+		ch <- model.Teacher{
+			Name: <-names,
+		}
+	}()
+	return ch
 }
