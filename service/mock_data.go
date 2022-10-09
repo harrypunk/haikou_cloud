@@ -26,6 +26,37 @@ func AddMockTeachers(db *gorm.DB, count int) *gorm.DB {
 	return db.Create(teachers)
 }
 
+func AddMockSessions(db *gorm.DB, count int) *gorm.DB {
+	var teachers []model.Teacher
+	result := db.Find(&teachers)
+	err := result.Error
+	if err != nil {
+		return result
+	}
+	var students []model.Student
+	result = db.Find(&students)
+	err = result.Error
+	if err != nil {
+		return result
+	}
+	var teacherCh = loopArray(teachers)
+	var studCh = loopArray(students)
+	sessions := make([]model.Session, count)
+	for i := 0; i < count; i++ {
+		var s = sessions[i]
+		mainTeacher := <-teacherCh
+		s.CourseId = mainTeacher.CourseId
+		s.MainTeacherID = mainTeacher.ID
+		for j := 0; j < 3; j++ {
+			st1 := <-studCh
+			s.Students = append(s.Students, &st1)
+		}
+		t1 := <-teacherCh
+		s.OtherPeople = append(s.OtherPeople, &t1)
+	}
+	return db.Create(sessions)
+}
+
 func AddMockData(db *gorm.DB, familyNum int) error {
 	var grades []model.Grade
 	result := db.Find(&grades)

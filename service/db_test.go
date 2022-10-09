@@ -94,3 +94,18 @@ func TestTeachers(t *testing.T) {
 	rows := result.RowsAffected
 	t.Log(rows)
 }
+
+func TestSessions(t *testing.T) {
+	db, err := localDB()
+	if err != nil {
+		t.Error(err)
+	}
+	result := AddMockSessions(db, 12)
+	err = result.Error
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+	rows := result.RowsAffected
+	t.Log(rows)
+}
