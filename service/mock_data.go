@@ -134,8 +134,10 @@ func mockTeacherNames(seed int64) <-chan model.Teacher {
 	var generator = mock_data.NewWithSeed(seed)
 	var names = generator.RandomNameList()
 	go func() {
-		ch <- model.Teacher{
-			Name: <-names,
+		for {
+			ch <- model.Teacher{
+				Name: <-names,
+			}
 		}
 	}()
 	return ch

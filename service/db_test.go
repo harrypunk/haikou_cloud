@@ -79,3 +79,18 @@ func TestParentsChildren(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestTeachers(t *testing.T) {
+	db, err := localDB()
+	if err != nil {
+		t.Error(err)
+	}
+	result := AddMockTeachers(db, 10)
+	err = result.Error
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+	rows := result.RowsAffected
+	t.Log(rows)
+}
