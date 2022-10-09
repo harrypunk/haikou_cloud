@@ -43,7 +43,7 @@ func AddMockSessions(db *gorm.DB, count int) *gorm.DB {
 	var studCh = loopArray(students)
 	sessions := make([]model.Session, count)
 	for i := 0; i < count; i++ {
-		var s = sessions[i]
+		var s = model.Session{}
 		mainTeacher := <-teacherCh
 		s.CourseId = mainTeacher.CourseId
 		s.MainTeacherID = mainTeacher.ID
@@ -53,6 +53,7 @@ func AddMockSessions(db *gorm.DB, count int) *gorm.DB {
 		}
 		t1 := <-teacherCh
 		s.OtherPeople = append(s.OtherPeople, &t1)
+		sessions[i] = s
 	}
 	return db.Create(sessions)
 }
