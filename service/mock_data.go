@@ -8,12 +8,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func AddMockTeachers(db *gorm.DB, count int) *gorm.DB {
+func AddMockTeachers(db *gorm.DB, count int) (*int64, error) {
 	var courses []model.Course
 	result := db.Find(&courses)
 	err := result.Error
 	if err != nil {
-		return result
+		return nil, err
 	}
 	var teacherNames = mockTeacherNames(103)
 	var courseCh = loopArray(courses)
@@ -23,21 +23,22 @@ func AddMockTeachers(db *gorm.DB, count int) *gorm.DB {
 		teacher.CourseId = (<-courseCh).ID
 		teachers = append(teachers, teacher)
 	}
-	return db.Create(teachers)
+	result = db.Create(teachers)
+	return &result.RowsAffected, result.Error
 }
 
-func AddMockSessions(db *gorm.DB, count int) *gorm.DB {
+func AddMockSessions(db *gorm.DB, count int) (*int64, error) {
 	var teachers []model.Teacher
 	result := db.Find(&teachers)
 	err := result.Error
 	if err != nil {
-		return result
+		return nil, err
 	}
 	var students []model.Student
 	result = db.Find(&students)
 	err = result.Error
 	if err != nil {
-		return result
+		return nil, err
 	}
 	var teacherCh = loopArray(teachers)
 	var studCh = loopArray(students)
@@ -55,7 +56,8 @@ func AddMockSessions(db *gorm.DB, count int) *gorm.DB {
 		s.OtherPeople = append(s.OtherPeople, &t1)
 		sessions[i] = s
 	}
-	return db.Create(sessions)
+	result = db.Create(sessions)
+	return &result.RowsAffected, result.Error
 }
 
 func AddMockData(db *gorm.DB, familyNum int) error {

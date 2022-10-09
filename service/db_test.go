@@ -85,13 +85,11 @@ func TestTeachers(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	result := AddMockTeachers(db, 10)
-	err = result.Error
+	rows, err := AddMockTeachers(db, 10)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
-	rows := result.RowsAffected
 	t.Log(rows)
 }
 
@@ -100,12 +98,10 @@ func TestSessions(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	result := AddMockSessions(db, 12)
-	err = result.Error
+	rows, err := AddMockSessions(db, 12)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
-	rows := result.RowsAffected
 	t.Log(rows)
 }
