@@ -52,8 +52,6 @@ func AddMockSessions(db *gorm.DB, count int) (*int64, error) {
 			st1 := <-studCh
 			s.Students = append(s.Students, &st1)
 		}
-		t1 := <-teacherCh
-		s.OtherPeople = append(s.OtherPeople, &t1)
 		sessions[i] = s
 	}
 	result = db.Create(sessions)

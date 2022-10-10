@@ -6,15 +6,17 @@ import (
 
 type Student struct {
 	gorm.Model
-	Gender   uint8  `gorm:"type:TINYINT UNSIGNED;"`
-	Age      uint8  `gorm:"type:TINYINT UNSIGNED;"`
-	Name     string `gorm:"type:varchar(10);"`
-	Phone    string `gorm:"type:varchar(20);"`
-	FamilyID uint
-	GradeID  uint
-	SchoolID uint
-	Courses  []*Course  `gorm:"many2many:student_course;"`
-	Sessions []*Session `gorm:"many2many:student_session;"`
+	Gender          uint8  `gorm:"type:TINYINT UNSIGNED;"`
+	Age             uint8  `gorm:"type:TINYINT UNSIGNED;"`
+	Name            string `gorm:"type:varchar(10);"`
+	Phone           string `gorm:"type:varchar(20);"`
+	FamilyID        uint
+	GradeID         uint
+	SchoolID        uint
+	Courses         []*Course  `gorm:"many2many:student_course;"`
+	Sessions        []*Session `gorm:"many2many:student_session;"`
+	CurrentTeachers []*Teacher `gorm:"many2many:student_current_teacher"`
+	ReferTeachers   []*Teacher `gorm:"many2many:student_refer_teacher"`
 }
 
 type Parent struct {
@@ -58,11 +60,12 @@ type Course struct {
 
 type Teacher struct {
 	gorm.Model
-	Name          string `gorm:"type:varchar(20);"`
-	Description   string `gorm:"type:TEXT;"`
-	CourseId      uint
-	MainSessions  []Session  `gorm:"foreignKey:MainTeacherID"`
-	OtherSessions []*Session `gorm:"many2many:other_teacher_session;"`
+	Name            string `gorm:"type:varchar(20);"`
+	Description     string `gorm:"type:TEXT;"`
+	CourseId        uint
+	MainSessions    []Session  `gorm:"foreignKey:MainTeacherID"`
+	CurrentStudents []*Student `gorm:"many2many:student_current_teacher"`
+	ReferStudents   []*Student `gorm:"many2many:student_refer_teacher"`
 }
 
 type Session struct {
@@ -71,5 +74,4 @@ type Session struct {
 	Description   string     `gorm:"type:TEXT;"`
 	Students      []*Student `gorm:"many2many:student_session;"`
 	MainTeacherID uint
-	OtherPeople   []*Teacher `gorm:"many2many:other_teacher_session;"`
 }
