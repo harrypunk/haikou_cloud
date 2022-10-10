@@ -62,7 +62,7 @@ type Teacher struct {
 	Description   string `gorm:"type:TEXT;"`
 	CourseId      uint
 	MainSessions  []Session  `gorm:"foreignKey:MainTeacherID"`
-	OtherSessions []*Session `gorm:"many2many:teacher_session;"`
+	OtherSessions []*Session `gorm:"many2many:other_teacher_session;"`
 }
 
 type Session struct {
@@ -71,5 +71,5 @@ type Session struct {
 	Description   string     `gorm:"type:TEXT;"`
 	Students      []*Student `gorm:"many2many:student_session;"`
 	MainTeacherID uint
-	OtherPeople   []*Teacher `gorm:"many2many:teacher_session;"`
+	OtherPeople   []*Teacher `gorm:"many2many:other_teacher_session;"`
 }
