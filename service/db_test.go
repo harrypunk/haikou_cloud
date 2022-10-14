@@ -16,7 +16,9 @@ func setLocalDB() {
 }
 
 func localDB() (db *gorm.DB, err error) {
-	return Connection("onetwo", "", "localhost", "haikou_test")
+	return localDBConfig.ToClient(&gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 }
 
 var localDBConfig = DBConfig{
@@ -87,9 +89,7 @@ func TestParentsChildren(t *testing.T) {
 }
 
 func TestTeachers(t *testing.T) {
-	db, err := localDBConfig.ToClient(&gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
+	db, err := localDB()
 	if err != nil {
 		t.Error(err)
 	}
