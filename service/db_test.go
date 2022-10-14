@@ -79,7 +79,7 @@ func TestParentsChildren(t *testing.T) {
 		t.Error(err)
 	}
 	var client = NewMockClient(100, db)
-	err = client.AddMockData(50)
+	err = client.AddMockFamilies(50)
 	if err != nil {
 		t.Error(err)
 		t.Fail()

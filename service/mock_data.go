@@ -76,7 +76,7 @@ func (client *MockClient) AddMockSessions(count int) (*int64, error) {
 	return &result.RowsAffected, result.Error
 }
 
-func (client *MockClient) AddMockData(familyNum int) error {
+func (client *MockClient) AddMockFamilies(familyNum int) error {
 	var db = client.db
 	var grades []model.Grade
 	result := db.Find(&grades)
