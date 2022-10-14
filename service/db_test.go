@@ -1,9 +1,10 @@
-package service
+package service_test
 
 import (
 	"os"
 	"testing"
 
+	s "github.com/harrypunk/haikou_cloud/service"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -21,7 +22,7 @@ func localDB() (db *gorm.DB, err error) {
 	})
 }
 
-var localDBConfig = DBConfig{
+var localDBConfig = s.DBConfig{
 	Username: "onetwo",
 	Password: "",
 	Url:      "localhost",
@@ -30,7 +31,7 @@ var localDBConfig = DBConfig{
 
 func TestMigrate(t *testing.T) {
 	setLocalDB()
-	err := Migrate()
+	err := s.Migrate()
 	if err != nil {
 		t.Fail()
 	}
@@ -41,8 +42,8 @@ func TestGrades(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	data := NewCommonData()
-	err = AddGrades(db, &data)
+	data := s.NewCommonData()
+	err = s.AddGrades(db, &data)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
@@ -54,8 +55,8 @@ func TestCourses(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	data := NewCommonData()
-	err = AddCourses(db, &data)
+	data := s.NewCommonData()
+	err = s.AddCourses(db, &data)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
@@ -67,7 +68,7 @@ func TestSchools(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	var client = NewMockClient(100, db)
+	var client = s.NewMockClient(100, db)
 	err = client.AddMockSchool()
 	if err != nil {
 		t.Error(err)
@@ -80,7 +81,7 @@ func TestParentsChildren(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	var client = NewMockClient(100, db)
+	var client = s.NewMockClient(100, db)
 	err = client.AddMockFamilies(50)
 	if err != nil {
 		t.Error(err)
@@ -93,7 +94,7 @@ func TestTeachers(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	var client = NewMockClient(100, db)
+	var client = s.NewMockClient(100, db)
 	rows, err := client.AddMockTeachers(10)
 	if err != nil {
 		t.Error(err)
@@ -107,7 +108,7 @@ func TestSessions(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	var client = NewMockClient(100, db)
+	var client = s.NewMockClient(100, db)
 	rows, err := client.AddMockSessions(12)
 	if err != nil {
 		t.Error(err)
@@ -121,10 +122,23 @@ func TestAssociateStudentTeacher(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	var client = NewMockClient(100, db)
+	var client = s.NewMockClient(100, db)
 	err = client.AssociateStudentTeacher()
 	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
+}
+
+func TestGetStudentList(t *testing.T) {
+	client, err := s.NewClient(true, localDBConfig)
+	if err != nil {
+		t.Error(err)
+	}
+	students, err := client.GetStudents(1, 10)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+	t.Logf("students length: %v", len(students))
 }
