@@ -39,21 +39,25 @@ func (client *MockClient) AssociateStudentTeacher() error {
 	}
 
 	var teacherCh = loopArray(teachers)
-	for _, st := range students {
+	var currentTeacherList []*model.Teacher
+	var referTeacherList []*model.Teacher
+	for range students {
 		var currentTeacherCount = client.rand.Intn(2) + 1
 		var referTeacherCount = client.rand.Intn(3) + 1
 		for i := 0; i < currentTeacherCount; i++ {
 			teacher := <-teacherCh
-			st.CurrentTeachers = append(st.CurrentTeachers, &teacher)
+			currentTeacherList = append(currentTeacherList, &teacher)
 		}
 		for i := 0; i < referTeacherCount; i++ {
 			teacher := <-teacherCh
-			st.ReferTeachers = append(st.CurrentTeachers, &teacher)
+			referTeacherList = append(referTeacherList, &teacher)
 		}
 	}
-	result = client.db.Save(&students)
-
-	return result.Error
+	err = client.db.Model(&students).Association("CurrentTeachers").Append(currentTeacherList)
+	if err != nil {
+		return err
+	}
+	return client.db.Model(&students).Association("ReferTeachers").Append(referTeacherList)
 }
 
 func (client *MockClient) AddMockTeachers(count int) (*int64, error) {
