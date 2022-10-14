@@ -47,14 +47,20 @@ func (client *MockClient) AssociateStudentTeacher() error {
 			teacher := <-teacherCh
 			currentTeacherList = append(currentTeacherList, teacher)
 		}
-		client.db.Model(&st).Association("CurrentTeachers").Append(currentTeacherList)
+		err = client.db.Model(&st).Association("CurrentTeachers").Append(currentTeacherList)
+		if err != nil {
+			return err
+		}
 
 		var referTeacherList []model.Teacher
 		for i := 0; i < referTeacherCount; i++ {
 			teacher := <-teacherCh
 			referTeacherList = append(referTeacherList, teacher)
 		}
-		client.db.Model(&st).Association("ReferTeachers").Append(referTeacherList)
+		err = client.db.Model(&st).Association("ReferTeachers").Append(referTeacherList)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

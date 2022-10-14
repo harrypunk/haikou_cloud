@@ -1,4 +1,4 @@
-funcs = aliyun_migrate init_common init_schools init_mock_families
+funcs = aliyun_migrate init_common init_schools init_mock_families associate_mock_student_teacher
 sls_bucket = sls075
 
 .PHONY: clean $(funcs) sync all
