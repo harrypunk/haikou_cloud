@@ -15,7 +15,8 @@ func addSchools(ctx context.Context, event StructEvent) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = service.AddMockSchool(db)
+	var client = service.NewMockClient(100, db)
+	err = client.AddMockSchool()
 	if err != nil {
 		return nil, err
 	}

@@ -3,14 +3,28 @@ package service
 import (
 	"fmt"
 
+	"math/rand"
+
 	"github.com/harrypunk/haikou_cloud/mock_data"
 	"github.com/harrypunk/haikou_cloud/model"
 	"gorm.io/gorm"
 )
 
-func AddMockTeachers(db *gorm.DB, count int) (*int64, error) {
+type MockClient struct {
+	rand rand.Rand
+	db   *gorm.DB
+}
+
+func NewMockClient(seed int64, db *gorm.DB) MockClient {
+	return MockClient{
+		rand: *rand.New(rand.NewSource(seed)),
+		db:   db,
+	}
+}
+
+func (client *MockClient) AddMockTeachers(count int) (*int64, error) {
 	var courses []model.Course
-	result := db.Find(&courses)
+	result := client.db.Find(&courses)
 	err := result.Error
 	if err != nil {
 		return nil, err
@@ -23,19 +37,21 @@ func AddMockTeachers(db *gorm.DB, count int) (*int64, error) {
 		teacher.CourseId = (<-courseCh).ID
 		teachers = append(teachers, teacher)
 	}
-	result = db.Create(teachers)
+	result = client.db.Create(teachers)
 	return &result.RowsAffected, result.Error
 }
 
-func AddMockSessions(db *gorm.DB, count int) (*int64, error) {
+func (client *MockClient) AddMockSessions(count int) (*int64, error) {
+	// get all teachers
 	var teachers []model.Teacher
-	result := db.Find(&teachers)
+	result := client.db.Find(&teachers)
 	err := result.Error
 	if err != nil {
 		return nil, err
 	}
+	// get all students
 	var students []model.Student
-	result = db.Find(&students)
+	result = client.db.Find(&students)
 	err = result.Error
 	if err != nil {
 		return nil, err
@@ -48,17 +64,20 @@ func AddMockSessions(db *gorm.DB, count int) (*int64, error) {
 		mainTeacher := <-teacherCh
 		s.CourseId = mainTeacher.CourseId
 		s.MainTeacherID = mainTeacher.ID
-		for j := 0; j < 3; j++ {
+		// random students
+		var studentCount = client.rand.Intn(4)
+		for j := 0; j < studentCount; j++ {
 			st1 := <-studCh
 			s.Students = append(s.Students, &st1)
 		}
 		sessions[i] = s
 	}
-	result = db.Create(sessions)
+	result = client.db.Create(sessions)
 	return &result.RowsAffected, result.Error
 }
 
-func AddMockData(db *gorm.DB, familyNum int) error {
+func (client *MockClient) AddMockData(familyNum int) error {
+	var db = client.db
 	var grades []model.Grade
 	result := db.Find(&grades)
 	err := result.Error
@@ -80,8 +99,8 @@ func AddMockData(db *gorm.DB, familyNum int) error {
 	return err
 }
 
-func AddMockSchool(db *gorm.DB) error {
-	var result = db.Create(&mockSchools)
+func (client *MockClient) AddMockSchool() error {
+	var result = client.db.Create(&mockSchools)
 	return result.Error
 }
 

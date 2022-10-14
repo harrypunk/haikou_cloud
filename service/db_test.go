@@ -65,7 +65,8 @@ func TestSchools(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = AddMockSchool(db)
+	var client = NewMockClient(100, db)
+	err = client.AddMockSchool()
 	if err != nil {
 		t.Error(err)
 		t.Fail()
@@ -77,7 +78,8 @@ func TestParentsChildren(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = AddMockData(db, 50)
+	var client = NewMockClient(100, db)
+	err = client.AddMockData(50)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
@@ -91,7 +93,8 @@ func TestTeachers(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	rows, err := AddMockTeachers(db, 10)
+	var client = NewMockClient(100, db)
+	rows, err := client.AddMockTeachers(10)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
@@ -104,7 +107,8 @@ func TestSessions(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	rows, err := AddMockSessions(db, 12)
+	var client = NewMockClient(100, db)
+	rows, err := client.AddMockSessions(12)
 	if err != nil {
 		t.Error(err)
 		t.Fail()

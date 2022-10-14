@@ -15,7 +15,8 @@ func addMockData(ctx context.Context, event StructEvent) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
-	service.AddMockData(db, 100)
+	var client = service.NewMockClient(100, db)
+	client.AddMockData(100)
 	if err != nil {
 		return nil, err
 	}
