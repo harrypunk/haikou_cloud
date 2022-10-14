@@ -115,3 +115,16 @@ func TestSessions(t *testing.T) {
 	}
 	t.Log(rows)
 }
+
+func TestAssociateStudentTeacher(t *testing.T) {
+	db, err := localDB()
+	if err != nil {
+		t.Error(err)
+	}
+	var client = NewMockClient(100, db)
+	err = client.AssociateStudentTeacher()
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+}

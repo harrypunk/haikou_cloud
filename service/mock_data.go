@@ -22,6 +22,40 @@ func NewMockClient(seed int64, db *gorm.DB) MockClient {
 	}
 }
 
+func (client *MockClient) AssociateStudentTeacher() error {
+	// all teachers
+	var teachers []model.Teacher
+	result := client.db.Find(&teachers)
+	err := result.Error
+	if err != nil {
+		return err
+	}
+	// all students
+	var students []model.Student
+	result = client.db.Find(&students)
+	err = result.Error
+	if err != nil {
+		return err
+	}
+
+	var teacherCh = loopArray(teachers)
+	for _, st := range students {
+		var currentTeacherCount = client.rand.Intn(2) + 1
+		var referTeacherCount = client.rand.Intn(3) + 1
+		for i := 0; i < currentTeacherCount; i++ {
+			teacher := <-teacherCh
+			st.CurrentTeachers = append(st.CurrentTeachers, &teacher)
+		}
+		for i := 0; i < referTeacherCount; i++ {
+			teacher := <-teacherCh
+			st.ReferTeachers = append(st.CurrentTeachers, &teacher)
+		}
+	}
+	result = client.db.Save(&students)
+
+	return result.Error
+}
+
 func (client *MockClient) AddMockTeachers(count int) (*int64, error) {
 	var courses []model.Course
 	result := client.db.Find(&courses)
