@@ -41,7 +41,9 @@ func (client *Client) GetStudents(offset int, limit int) ([]model.Student, error
 
 func (client *Client) GetStudentDetail(id uint) (*model.Student, error) {
 	var st model.Student
-	result := client.db.First(&st, id)
+	result := client.db.
+		Preload("School").
+		First(&st, id)
 	err := result.Error
 	if err != nil {
 		return nil, err

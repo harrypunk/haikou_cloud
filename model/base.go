@@ -13,6 +13,7 @@ type Student struct {
 	FamilyID        uint
 	GradeID         uint
 	SchoolID        uint
+	School          School
 	Courses         []*Course  `gorm:"many2many:student_course;"`
 	Sessions        []*Session `gorm:"many2many:student_session;"`
 	CurrentTeachers []*Teacher `gorm:"many2many:student_current_teacher"`

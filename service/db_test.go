@@ -142,3 +142,16 @@ func TestGetStudentList(t *testing.T) {
 	}
 	t.Logf("students length: %v", len(students))
 }
+
+func TestGetStudentDetail(t *testing.T) {
+	client, err := s.NewClient(true, localDBConfig)
+	if err != nil {
+		t.Error(err)
+	}
+	st, err := client.GetStudentDetail(2)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+	t.Logf("student name %v, school %v", st.Name, st.School.Name)
+}
