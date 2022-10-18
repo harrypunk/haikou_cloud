@@ -12,6 +12,16 @@ func StudentToInfo(st *model.Student) *StudentInfo {
 	}
 }
 
+func StudentsToInfos(studs []model.Student) []StudentInfo {
+	var infos []StudentInfo
+	for i := 0; i < len(studs); i++ {
+		var inf = StudentToInfo(&studs[i])
+		infos = append(infos, *inf)
+	}
+
+	return infos
+}
+
 func StudentToDetail(st *model.Student) *StudentDetail {
 	detail := StudentDetail{}
 
