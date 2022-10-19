@@ -11,6 +11,13 @@ type Client struct {
 	db   *gorm.DB
 }
 
+func NewSimpleClient(db *gorm.DB) (*Client, error) {
+	return &Client{
+		Data: DBConfig{},
+		db:   db,
+	}, nil
+}
+
 func NewClient(debug bool, data DBConfig) (*Client, error) {
 	cfg := gorm.Config{}
 	if debug {
